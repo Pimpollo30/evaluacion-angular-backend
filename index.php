@@ -1,4 +1,7 @@
 <?php
+header('Access-Control-Allow-Origin: *');
+header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept");
+header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE');
 /*
 Como su nombre lo indica, es el archivo index.php, este archivo permitirá acceder como tal al sistema inicializando el controlador a utilizar (en nuestro persona, Persona) y la acción a ejecutar solicitda por el usuario.
 */

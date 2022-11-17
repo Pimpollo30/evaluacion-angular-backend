@@ -126,32 +126,7 @@ class Persona {
     
     
     public function agregarPersona() { //Este método que permitirá almacenar en la base de datos los valores establecidos previamente.
-        $query = $this->conexion->prepare("INSERT INTO persona VALUES (:id, :nombre, :ape_pat,:ape_mat,:rfc,:curp,:fec_nac,now(),:estatus_id,:sexo_id,:persona_tipo_id,now(),:avatar)"); //Se prepara la consulta
-        
-        //Se hace el binding de parámetros para la consulta
-        $query->bindParam(":id",$this->id);
-        $query->bindParam(":nombre",$this->nombre);
-        $query->bindParam(":ape_pat",$this->ape_pat);
-        $query->bindParam(":ape_mat",$this->ape_mat);
-        $query->bindParam(":rfc",$this->rfc);
-        $query->bindParam(":curp",$this->curp);
-        $query->bindParam(":fec_nac",$this->fec_nac);
-        $query->bindParam(":estatus_id",$this->estatus_id);
-        $query->bindParam(":sexo_id",$this->sexo_id);
-        $query->bindParam(":persona_tipo_id",$this->persona_tipo_id);
-        $query->bindParam(":avatar",$this->avatar);
-        
-        if ($query->execute()) { //Si esta condición se cumple, significa que la sentencia SQL se ejecutó correctamente
-            $result = $this->conexion->lastInsertId();
-            $findRow = $this->getPersona($result);
-            return $findRow;
-        }else {
-            return [];
-        }            
-    }
-    
-    public function modificarPersona() { //Este método que permitirá modificar en la base de datos los valores establecidos previamente.
-        $query = $this->conexion->prepare("UPDATE persona SET nombre = :nombre, ape_pat = :ape_pat, ape_mat = :ape_mat, rfc = :rfc, curp = :curp, fecha_nacimiento = :fec_nac, estatus_id = :estatus_id, sexo_id = :sexo_id, persona_tipo_id = :persona_tipo_id, fecha_modificacion = :fec_modificacion, avatar = :avatar WHERE id = :id"); //Se prepara la consulta
+        $query = $this->conexion->prepare("INSERT INTO persona VALUES (:id, :nombre, :ape_pat,:ape_mat,:rfc,:curp,:fec_nac,now(),:estatus_id,:sexo_id,:persona_tipo_id,:fec_modificacion,:avatar)"); //Se prepara la consulta
         
         //Se hace el binding de parámetros para la consulta
         $query->bindParam(":id",$this->id);
@@ -165,6 +140,31 @@ class Persona {
         $query->bindParam(":sexo_id",$this->sexo_id);
         $query->bindParam(":persona_tipo_id",$this->persona_tipo_id);
         $query->bindParam(":fec_modificacion",$this->fec_modificacion);
+        $query->bindParam(":avatar",$this->avatar);
+        
+        if ($query->execute()) { //Si esta condición se cumple, significa que la sentencia SQL se ejecutó correctamente
+            $result = $this->conexion->lastInsertId();
+            $findRow = $this->getPersona($result);
+            return $findRow;
+        }else {
+            return [];
+        }            
+    }
+    
+    public function modificarPersona() { //Este método que permitirá modificar en la base de datos los valores establecidos previamente.
+        $query = $this->conexion->prepare("UPDATE persona SET nombre = :nombre, ape_pat = :ape_pat, ape_mat = :ape_mat, rfc = :rfc, curp = :curp, fecha_nacimiento = :fec_nac, estatus_id = :estatus_id, sexo_id = :sexo_id, persona_tipo_id = :persona_tipo_id, fecha_modificacion = now(), avatar = :avatar WHERE id = :id"); //Se prepara la consulta
+        
+        //Se hace el binding de parámetros para la consulta
+        $query->bindParam(":id",$this->id);
+        $query->bindParam(":nombre",$this->nombre);
+        $query->bindParam(":ape_pat",$this->ape_pat);
+        $query->bindParam(":ape_mat",$this->ape_mat);
+        $query->bindParam(":rfc",$this->rfc);
+        $query->bindParam(":curp",$this->curp);
+        $query->bindParam(":fec_nac",$this->fec_nac);
+        $query->bindParam(":estatus_id",$this->estatus_id);
+        $query->bindParam(":sexo_id",$this->sexo_id);
+        $query->bindParam(":persona_tipo_id",$this->persona_tipo_id);
         $query->bindParam(":avatar",$this->avatar);  
         
         if ($query->execute()) { //Si esta condición se cumple, significa que la sentencia SQL se ejecutó correctamente

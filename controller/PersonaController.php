@@ -20,11 +20,11 @@ class PersonaController {
         $persona->setRfc($_POST["rfc"]);
         $persona->setCurp($_POST["curp"]);
         $persona->setFecNac($_POST["fec_nac"]);
-        $persona->setEstatusId(3);
-        $persona->setSexoId(1);
-        $persona->setPersonaTipoId(1);
-        $persona->setFecModificacion('2022-11-17');
-        $persona->setAvatar('url');
+        $persona->setEstatusId($_POST["estatus_id"]);
+        $persona->setSexoId($_POST["sexo_id"] == '' ? NULL : $_POST["sexo_id"]);
+        $persona->setPersonaTipoId($_POST["persona_tipo_id"]);
+        $persona->setFecModificacion(NULL);
+        $persona->setAvatar($_POST["avatar"]);
         $agregar = $persona->agregarPersona(); //Se invoca el método que permitirá almacenar en la base de datos los valores establecidos previamente
         $this->view("indexView",$agregar); //Se ejecuta método que invocará la vista que mostrará el resultado de la inserción.
     }
@@ -38,18 +38,17 @@ class PersonaController {
         $persona->setRfc($_POST["rfc"]);
         $persona->setCurp($_POST["curp"]);
         $persona->setFecNac($_POST["fec_nac"]);
-        $persona->setEstatusId(3);
-        $persona->setSexoId(1);
-        $persona->setPersonaTipoId(1);
-        $persona->setFecModificacion(date('Y-m-d'));
-        $persona->setAvatar('url');
+        $persona->setEstatusId($_POST["estatus_id"]);
+        $persona->setSexoId($_POST["sexo_id"] == '' ? NULL : $_POST["sexo_id"]);
+        $persona->setPersonaTipoId($_POST["persona_tipo_id"]);
+        $persona->setAvatar($_POST["avatar"]);
         $modificar = $persona->modificarPersona(); //Se invoca el método que permitirá modificar en la base de datos los valores del registro que se desea modificar.
         $this->view("indexView",$modificar); //Se ejecuta método que invocará la vista que mostrará el resultado de la modificación.
     }
     
-    public function removerPersona() { //Este método permitirá crear un objeto Persona, al cual se le establecerá el ID correspondiente al registro que se desea eliminar de la base de datos.
+    public function removerPersona($id) { //Este método permitirá crear un objeto Persona, al cual se le establecerá el ID correspondiente al registro que se desea eliminar de la base de datos.
         $persona = new Persona($this->conexion);
-        $persona->setId($_POST["id"]);
+        $persona->setId($id);
         $eliminar = $persona->eliminarPersona(); //Se invoca el método que permitirá eliminar el registro de la base de datos identificado por su ID.
         $this->view("indexView",$eliminar); //Se ejecuta método que invocará la vista que mostrará el resultado de la eliminación.
     }        
@@ -59,11 +58,18 @@ class PersonaController {
         $personas = $persona->getPersonas();
         $this->view("indexView",$personas); //Se ejecuta método que invocará la vista que mostrará el resultado de la consulta.
     }
+
+    public function verPersona($id) { //Este método permitirá crear un objeto Persona, a fin de invocar el método que permitirá obtener un registro de la tabla 'Persona' de la base de datos por medio de su ID.
+        $persona = new Persona($this->conexion);
+        $personaResult = $persona->getPersona($id);
+        $this->view("indexView",$personaResult); //Se ejecuta método que invocará la vista que mostrará el resultado de la consulta.
+    }
     
     public function ejecutar($accion) { //Este método permitirá ejecutar el método correspondiente en base a la acción a realizar.
         switch ($accion) {
             case 'read':
-                $this->verPersonas();
+                if (!isset($_GET["id"]) && empty($_GET["id"])) $this->verPersonas();
+                else $this->verPersona($_GET["id"]);
                 break;
                 case 'create':
                     $this->crearPersona();
@@ -72,7 +78,7 @@ class PersonaController {
                         $this->actualizarPersona();
                         break;
                         case 'delete':
-                            $this->removerPersona();
+                            if (isset($_GET["id"]) && !empty($_GET["id"])) $this->removerPersona($_GET["id"]);
                             break;
                         }
                     }
